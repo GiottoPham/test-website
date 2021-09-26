@@ -1,19 +1,11 @@
-import instance from "api/axios";
 import { AboutUs, Banner, HotBooks, TypesBook } from "components";
-import { selectBooks,setBooks } from "features/books/booksSlice";
-import React, { useEffect } from "react";
-import { useSelector,useDispatch } from "react-redux";
+import { selectBooks} from "features/books/booksSlice";
+import React from "react";
+import { useSelector} from "react-redux";
 function HomePage(props) {
   const books = useSelector(selectBooks);
+  console.log(books);
   const hotbook = books.filter((book) => book.hot === true);
-  useEffect(()=>{
-    const getBooks = async ()=>{
-    const bookGetResp = await instance.get('/books');
-    const bookGet = bookGetResp.data;
-    console.log(bookGet.book_list);
-  };
-  getBooks();
-},[])
   return (
     <main>
       <Banner />

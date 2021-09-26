@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import InputOtp from '@onefifteen-z/react-input-otp';
 import { Modal, Spinner } from 'react-bootstrap';
@@ -25,7 +24,6 @@ export default function Register() {
   const [nameHidden, setNameHidden] = useState('hidden');
   const [phoneHidden, setPhoneHidden] = useState('hidden');
   const errorCommon = "This field must not empty";
-  const userNameError1 = "Your username has been used by somebody";
   const userNameError2 = "Your username has an incorrect format";
   const passwordError1 = "Your password has an incorrect format";
   const emailError1 = "Your email has an incorrect format";
@@ -33,10 +31,9 @@ export default function Register() {
   const [userNameError, setUserNameError] = useState(errorCommon);
   const [passwordError, setPasswordError] = useState(errorCommon);
   const [emailError, setEmailError] = useState(errorCommon);
-  const [nameError, setNameError] = useState(errorCommon);
   const [phoneError, setPhoneError] = useState(errorCommon);
   const [checked, setChecked] = useState(false);
-  const dispatch = useDispatch();
+  const nameError = errorCommon;
   const onChangeUserName = ({ target }) => {
     const newUserName = target.value;
     setUserName(newUserName);
@@ -217,7 +214,6 @@ export default function Register() {
                   setDisable(true);
                   const signUpInfo = { fullName: name, username: userName, password: password, contact: phone, email: email };
                   const resp = await instance.post('/register', signUpInfo);
-                  const id = resp.data.userId;
                   console.log(resp.data);
                   setShow(false);
                   setShow2(true);

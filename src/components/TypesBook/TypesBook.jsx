@@ -1,27 +1,14 @@
-import instance from "api/axios";
 import { Title } from "components";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { TYPES_BOOK } from "utils/static";
 import CardTypesBook from "../CardTypesBook/CardTypesBook";
 import "./TypesBook.scss";
-
+import { selectTypes } from "features/books/booksSlice";
+import { useSelector } from "react-redux";
 function TypesBook(props) {
-  const [types, setTypes] = useState(TYPES_BOOK);
-  const [loading, setLoading] = useState(true);
-  console.log(types);
-  useEffect(()=>{
-    const fetchType = async ()=>{
-      const typeResp = await instance.get('/categories');
-      const type = typeResp.data.category_list;
-      type.sort(function(a, b) {
-        return Number(a.cat_id) - Number(b.cat_id);
-      });
-      setTypes(type);
-      setLoading();
-    }
-    fetchType();
-  },[])
-  if(loading) return(
+  const types = useSelector(selectTypes);
+  const typeUsed =types.slice(0,4);
+  if(!types) return(
     <section>
       <div className="container">
         <div className="typesbook">
@@ -51,8 +38,7 @@ function TypesBook(props) {
             />
           </div>
           <div className="typesbook__list">
-            {types.map((type) => {
-              if(Number(type.cat_id)<5)
+            {typeUsed.map((type) => {
               return <CardTypesBook key={type.cat_id} name={type.cat_nm} id= {type.cat_id} />;
             })}
           </div>

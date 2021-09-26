@@ -11,10 +11,30 @@ import {
   ProfilePage,
   CartPage,
 } from "pages";
-import { Suspense } from "react";
+import { Suspense,useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-
+import {useDispatch} from 'react-redux';
+import {setTypes} from "features/books/booksSlice";
+import instance from "api/axios";
 function App() {
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    const fetchType = async ()=>{
+      const typeResp = await instance.get('/categories');
+      const type = typeResp.data.category_list;
+      type.sort(function(a, b) {
+        return Number(a.cat_id) - Number(b.cat_id);
+      });
+      dispatch(setTypes(type));
+    }
+    const getBooks = async ()=>{
+      const bookGetResp = await instance.get('/books');
+      const bookGet = bookGetResp.data;
+      console.log(bookGet.book_list);
+    };
+    getBooks();
+    fetchType();
+  },[dispatch]);
   return (
     <Suspense fallback={<div>Loading..</div>}>
       <BrowserRouter>
@@ -49,5 +69,4 @@ function App() {
     </Suspense>
   );
 }
-
 export default App;

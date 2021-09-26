@@ -1,6 +1,7 @@
 import { resetCart, selectCart } from "features/cart/cartSlice";
 import { logOut, selectCurrentUser } from "features/session/sessionSlice";
-import React,{useState, useEffect} from "react";
+import { selectTypes} from "features/books/booksSlice";
+import React from "react";
 import { TiShoppingCart, TiDeleteOutline } from "react-icons/ti";
 import { CgMenuGridR } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,26 +11,14 @@ import { STORE_NAME } from "utils/static";
 import instance from "api/axios";
 function Navbar() {
   const currentUser = useSelector(selectCurrentUser);
-  // console.log(currentUser);
   const items = useSelector(selectCart);
-  const dispatch = useDispatch();
+  const bookTypes = useSelector(selectTypes);
   const history = useHistory();
-  const [types, setTypes] = useState([]);
-  useEffect(()=>{
-    const fetchType = async ()=>{
-      const typeResp = await instance.get('/categories');
-      const type = typeResp.data.category_list;
-      type.sort(function(a, b) {
-        return Number(a.cat_id) - Number(b.cat_id);
-      });
-      setTypes(type);
-    }
-    fetchType();
-  },[])
   const [navbarOpen, setNavbarOpen] = React.useState(false);
-
+  const dispatch= useDispatch();
   const handleLogout = async() => {
     const logOutSession = await instance.post("/logout");
+    console.log(logOutSession.data);
     dispatch(logOut());
     dispatch(resetCart());
     history.push("/");
@@ -63,12 +52,15 @@ function Navbar() {
               </Link>
               <Link to="/books" className="navbar__link dropdown">
                 List of Books
-                <div class="dropdown-content">
+              </Link>
+              <div className="navbar__link dropdown">
+              Books Type
+              <div className="dropdown-content">
                 <ul>
-                {types.map((type)=><li><Link to={`/type/${type.cat_nm}`}>{type.cat_nm}</Link></li>)}
+                {bookTypes.map((type)=><li key={type.cat_id} ><Link to={`/type/${type.cat_nm}`}>{type.cat_nm}</Link></li>)}
                 </ul>
   </div>
-              </Link>
+  </div>
               <Link to="/cart" className="navbar__cart">
                 {items.length !== 0 && (
                   <span className="navbar__cart-count">{items.length}</span>
